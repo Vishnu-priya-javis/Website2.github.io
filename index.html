@@ -3,255 +3,200 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Inventory Management</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- For the chart -->
+  <title>Inventory Dashboard</title>
   <style>
     body {
-      margin: 0;
       font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      display: flex;
-      height: 100vh;
+      margin: 0;
+      background-color: #f9f9f9;
+      color: #333;
     }
 
-    .sidebar {
-      width: 250px;
-      background-color: #2c3e50;
-      color: white;
+    .container {
       padding: 20px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transition: width 0.3s;
-    }
-
-    .sidebar.collapsed {
-      width: 60px;
-    }
-
-    .sidebar .menu-item {
-      margin-bottom: 15px;
-      cursor: pointer;
-      transition: color 0.3s;
-    }
-
-    .sidebar .menu-item:hover {
-      color: #1abc9c;
-    }
-
-    .toggle-btn {
-      cursor: pointer;
-      margin-top: 20px;
-      background-color: #1abc9c;
-      border: none;
-      color: white;
-      padding: 10px;
-      border-radius: 5px;
-      text-align: center;
-    }
-
-    .content {
-      flex: 1;
-      padding: 20px;
-      overflow-y: auto;
     }
 
     .header {
-      text-align: center;
+      background-color: #fdf5e6;
       padding: 20px;
-      background-color: #2c3e50;
-      color: #ecf0f1;
+      text-align: center;
+      border-radius: 12px;
       margin-bottom: 20px;
     }
 
-    .grid-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .grid-item {
-      flex: 1 1 calc(33.333% - 20px);
-      max-width: calc(33.333% - 20px);
-      height: 150px;
-      background-color: #e74c3c;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      font-size: 18px;
-      color: white;
-      cursor: pointer;
-      transition: transform 0.3s, box-shadow 0.3s;
-    }
-
-    .grid-item:hover {
-      transform: scale(1.1);
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    }
-
-    .drawer {
-      position: fixed;
-      top: 0;
-      right: -400px;
-      width: 400px;
-      height: 100%;
-      background-color: #f4f4f4;
-      box-shadow: -4px 0 8px rgba(0, 0, 0, 0.1);
-      padding: 20px;
-      transition: right 0.3s ease-in-out;
-      overflow-y: auto;
-    }
-
-    .drawer.open {
-      right: 0;
-    }
-
-    .drawer-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .drawer-header h3 {
+    .header h1 {
       margin: 0;
+      font-size: 24px;
     }
 
-    .calendar-icon {
-      cursor: pointer;
+    .header p {
+      margin: 5px 0 0;
+      font-size: 16px;
+      color: #555;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 15px;
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .card h2 {
       font-size: 20px;
-      color: #2c3e50;
+      margin: 10px 0;
+    }
+
+    .card p {
+      font-size: 16px;
+      color: #777;
+    }
+
+    .section-title {
+      font-size: 20px;
+      margin-bottom: 15px;
+      font-weight: bold;
     }
 
     .chart-container {
-      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .chart {
+      flex: 1 1 45%;
+      background: #fff;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .table-container {
+      background: #fff;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin-top: 15px;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 20px;
+      margin-top: 10px;
     }
 
-    th, td {
+    table th, table td {
       border: 1px solid #ddd;
       padding: 8px;
       text-align: center;
     }
 
-    th {
-      background-color: #2c3e50;
-      color: white;
+    table th {
+      background-color: #f3f3f3;
+      color: #555;
     }
   </style>
 </head>
 <body>
-  <div class="sidebar">
-    <div>
-      <h3>Menu</h3>
-      <div class="menu-item">Current Inventory</div>
-      <div class="menu-item">Stock In Transit</div>
-      <div class="menu-item">ARS Orders</div>
-      <div class="menu-item">Place Order</div>
-    </div>
-    <button class="toggle-btn" onclick="toggleSidebar()">Toggle Sidebar</button>
-  </div>
-
-  <div class="content">
+  <div class="container">
+    <!-- Header -->
     <div class="header">
-      <h1>Company Name</h1>
-      <p>Headquarters Address: 5678 Business Blvd, Corporate City</p>
+      <h1>Hey, Javis User</h1>
+      <p>Take a look at the below stats...</p>
     </div>
 
-    <!-- Dynamic Grid -->
-    <div class="grid-container">
-      <div class="grid-item" onclick="openDrawer('Depot 1 SKU 001')">Depot 1<br>SKU 001<br>ATP: 100</div>
-      <div class="grid-item" onclick="openDrawer('Depot 1 SKU 002')">Depot 1<br>SKU 002<br>ATP: 200</div>
-      <div class="grid-item" onclick="openDrawer('Depot 1 SKU 003')">Depot 1<br>SKU 003<br>ATP: 150</div>
-      <!-- More items can be added here -->
+    <!-- Grid of Metrics -->
+    <div class="grid">
+      <div class="card">
+        <h2>₹ 6 Lakh</h2>
+        <p>Purchase Orders</p>
+        <p>10,000 POs | 45,000 lines</p>
+      </div>
+      <div class="card">
+        <h2>₹ 4.8 Lakh</h2>
+        <p>Sales Orders</p>
+        <p>8,000 POs | 39,000 lines</p>
+      </div>
+      <div class="card">
+        <h2>₹ 3 Lakh</h2>
+        <p>Outbound Delivery</p>
+        <p>6,000 POs | 30,000 lines</p>
+      </div>
+      <div class="card">
+        <h2>₹ 2.5 Lakh</h2>
+        <p>Invoices</p>
+        <p>5,500 POs | 25,000 lines</p>
+      </div>
+      <div class="card">
+        <h2>1 min</h2>
+        <p>Speed (Reading Purchase Orders)</p>
+      </div>
     </div>
-  </div>
 
-  <div class="drawer" id="drawer">
-    <div class="drawer-header">
-      <h3 id="drawer-title">Depot SKU</h3>
-      <span class="calendar-icon" onclick="showCalendar()">📅</span>
-    </div>
-
+    <!-- Additional Sections -->
     <div class="chart-container">
-      <canvas id="stockChart"></canvas>
+      <!-- Chart Section -->
+      <div class="chart">
+        <h3 class="section-title">Fill Rate</h3>
+        <p>75%</p>
+        <p>Historically, you are losing the fill rate due to commercial errors and master data issues.</p>
+      </div>
+
+      <!-- Efficiency Section -->
+      <div class="chart">
+        <h3 class="section-title">Efficiency</h3>
+        <p>Purchase Order Reading: 95%</p>
+        <p>Sales Order Creation: 90%</p>
+        <p>Outbound Delivery Creation: 85%</p>
+      </div>
     </div>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Order Number</th>
-          <th>Order Date</th>
-          <th>Quantity</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>ORD001</td>
-          <td>2025-02-01</td>
-          <td>100</td>
-        </tr>
-        <tr>
-          <td>ORD002</td>
-          <td>2025-02-03</td>
-          <td>200</td>
-        </tr>
-      </tbody>
-    </table>
+    <!-- Error Details Table -->
+    <div class="table-container">
+      <h3 class="section-title">Error Details</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Error Type</th>
+            <th>Cost</th>
+            <th>Change</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Commercial Error</td>
+            <td>₹ 2.5 L</td>
+            <td>20% ↑</td>
+          </tr>
+          <tr>
+            <td>Master Data Error</td>
+            <td>₹ 2.2 L</td>
+            <td>15% ↑</td>
+          </tr>
+          <tr>
+            <td>Customer Credit</td>
+            <td>₹ 3.2 L</td>
+            <td>10% ↑</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
-
-  <script>
-    function toggleSidebar() {
-      const sidebar = document.querySelector('.sidebar');
-      sidebar.classList.toggle('collapsed');
-    }
-
-    function openDrawer(title) {
-      document.getElementById('drawer-title').innerText = title;
-      document.getElementById('drawer').classList.add('open');
-      renderChart();
-    }
-
-    function showCalendar() {
-      alert('Calendar feature will be implemented here.');
-    }
-
-    function renderChart() {
-      const ctx = document.getElementById('stockChart').getContext('2d');
-      new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5'],
-          datasets: [{
-            label: 'Inventory',
-            data: [120, 110, 90, 70, 60],
-            borderColor: '#3498db',
-            backgroundColor: 'rgba(52, 152, 219, 0.2)',
-            fill: true,
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { display: false }
-          }
-        }
-      });
-    }
-
-    document.addEventListener('click', (e) => {
-      if (e.target.closest('.grid-item') || e.target.closest('.drawer')) return;
-      document.getElementById('drawer').classList.remove('open');
-    });
-  </script>
 </body>
 </html>
