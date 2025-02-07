@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Inventory Management</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- For the chart -->
   <style>
     body {
       margin: 0;
@@ -84,6 +85,7 @@
       text-align: center;
       font-size: 18px;
       color: white;
+      cursor: pointer;
       transition: transform 0.3s, box-shadow 0.3s;
     }
 
@@ -92,18 +94,58 @@
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     }
 
-    @media (max-width: 768px) {
-      .grid-item {
-        flex: 1 1 calc(50% - 20px);
-        max-width: calc(50% - 20px);
-      }
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: -400px;
+      width: 400px;
+      height: 100%;
+      background-color: #f4f4f4;
+      box-shadow: -4px 0 8px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      transition: right 0.3s ease-in-out;
+      overflow-y: auto;
     }
 
-    @media (max-width: 480px) {
-      .grid-item {
-        flex: 1 1 calc(100% - 20px);
-        max-width: calc(100% - 20px);
-      }
+    .drawer.open {
+      right: 0;
+    }
+
+    .drawer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .drawer-header h3 {
+      margin: 0;
+    }
+
+    .calendar-icon {
+      cursor: pointer;
+      font-size: 20px;
+      color: #2c3e50;
+    }
+
+    .chart-container {
+      margin-top: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #2c3e50;
+      color: white;
     }
   </style>
 </head>
@@ -127,16 +169,44 @@
 
     <!-- Dynamic Grid -->
     <div class="grid-container">
-      <div class="grid-item">Depot 1<br>SKU 001<br>ATP: 100</div>
-      <div class="grid-item">Depot 1<br>SKU 002<br>ATP: 200</div>
-      <div class="grid-item">Depot 1<br>SKU 003<br>ATP: 150</div>
-      <div class="grid-item">Depot 2<br>SKU 001<br>ATP: 80</div>
-      <div class="grid-item">Depot 2<br>SKU 002<br>ATP: 300</div>
-      <div class="grid-item">Depot 2<br>SKU 003<br>ATP: 60</div>
-      <div class="grid-item">Depot 3<br>SKU 001<br>ATP: 40</div>
-      <div class="grid-item">Depot 3<br>SKU 002<br>ATP: 90</div>
-      <div class="grid-item">Depot 3<br>SKU 003<br>ATP: 70</div>
+      <div class="grid-item" onclick="openDrawer('Depot 1 SKU 001')">Depot 1<br>SKU 001<br>ATP: 100</div>
+      <div class="grid-item" onclick="openDrawer('Depot 1 SKU 002')">Depot 1<br>SKU 002<br>ATP: 200</div>
+      <div class="grid-item" onclick="openDrawer('Depot 1 SKU 003')">Depot 1<br>SKU 003<br>ATP: 150</div>
+      <!-- More items can be added here -->
     </div>
+  </div>
+
+  <div class="drawer" id="drawer">
+    <div class="drawer-header">
+      <h3 id="drawer-title">Depot SKU</h3>
+      <span class="calendar-icon" onclick="showCalendar()">📅</span>
+    </div>
+
+    <div class="chart-container">
+      <canvas id="stockChart"></canvas>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Order Number</th>
+          <th>Order Date</th>
+          <th>Quantity</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>ORD001</td>
+          <td>2025-02-01</td>
+          <td>100</td>
+        </tr>
+        <tr>
+          <td>ORD002</td>
+          <td>2025-02-03</td>
+          <td>200</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
   <script>
@@ -144,6 +214,44 @@
       const sidebar = document.querySelector('.sidebar');
       sidebar.classList.toggle('collapsed');
     }
+
+    function openDrawer(title) {
+      document.getElementById('drawer-title').innerText = title;
+      document.getElementById('drawer').classList.add('open');
+      renderChart();
+    }
+
+    function showCalendar() {
+      alert('Calendar feature will be implemented here.');
+    }
+
+    function renderChart() {
+      const ctx = document.getElementById('stockChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5'],
+          datasets: [{
+            label: 'Inventory',
+            data: [120, 110, 90, 70, 60],
+            borderColor: '#3498db',
+            backgroundColor: 'rgba(52, 152, 219, 0.2)',
+            fill: true,
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false }
+          }
+        }
+      });
+    }
+
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('.grid-item') || e.target.closest('.drawer')) return;
+      document.getElementById('drawer').classList.remove('open');
+    });
   </script>
 </body>
 </html>
