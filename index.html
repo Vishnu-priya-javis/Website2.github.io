@@ -88,14 +88,37 @@
       border-radius: 12px;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       padding: 15px;
-      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       cursor: pointer;
+      position: relative;
     }
 
     .card:hover {
       transform: translateY(-5px);
       box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .card .depot {
+      position: absolute;
+      top: 10px;
+      left: 15px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    .card .atp {
+      font-size: 24px;
+      font-weight: bold;
+      color: #2c3e50;
+      margin: 20px 0;
+    }
+
+    .card .sku {
+      font-size: 14px;
+      color: #777;
     }
 
     .drawer {
@@ -182,16 +205,19 @@
 
     <div class="grid">
       <div class="card" onclick="openDrawer('SKU123')">
-        <h2>Product A</h2>
-        <p>Details about Product A</p>
+        <span class="depot">Depot A</span>
+        <div class="atp">50</div>
+        <span class="sku">SKU123</span>
       </div>
       <div class="card" onclick="openDrawer('SKU124')">
-        <h2>Product B</h2>
-        <p>Details about Product B</p>
+        <span class="depot">Depot B</span>
+        <div class="atp">75</div>
+        <span class="sku">SKU124</span>
       </div>
       <div class="card" onclick="openDrawer('SKU125')">
-        <h2>Product C</h2>
-        <p>Details about Product C</p>
+        <span class="depot">Depot C</span>
+        <div class="atp">100</div>
+        <span class="sku">SKU125</span>
       </div>
     </div>
 
