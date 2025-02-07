@@ -20,11 +20,23 @@
             position: fixed;
             height: 100vh;
             padding: 20px;
+            transition: width 0.3s;
+            overflow: hidden;
+        }
+
+        .sidebar.collapsed {
+            width: 60px;
         }
 
         .sidebar h2 {
             font-size: 20px;
             margin-bottom: 30px;
+            transition: opacity 0.3s;
+            opacity: 1;
+        }
+
+        .sidebar.collapsed h2 {
+            opacity: 0;
         }
 
         .sidebar ul {
@@ -43,17 +55,46 @@
             display: block;
             padding: 10px;
             border-radius: 5px;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, opacity 0.3s;
         }
 
         .sidebar ul li a:hover {
             background-color: #ff6347;
         }
 
+        .sidebar.collapsed ul li a {
+            text-align: center;
+            font-size: 14px;
+            padding: 10px 5px;
+        }
+
         .main-content {
             margin-left: 250px;
             padding: 20px;
             width: 100%;
+            transition: margin-left 0.3s;
+        }
+
+        .main-content.collapsed {
+            margin-left: 60px;
+        }
+
+        .toggle-btn {
+            position: absolute;
+            top: 20px;
+            right: -20px;
+            background-color: #ff6347;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .toggle-btn:hover {
+            background-color: #ff3e20;
         }
 
         .inventory-header {
@@ -93,7 +134,8 @@
     </style>
 </head>
 <body>
-    <div class="sidebar">
+    <div class="sidebar" id="sidebar">
+        <button class="toggle-btn" id="toggle-btn">&#9776;</button>
         <h2>Inventory</h2>
         <ul>
             <li><a href="#" onclick="showCurrentInventory()">Current Inventory</a></li>
@@ -123,6 +165,15 @@
     </div>
 
     <script>
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('main-content');
+        const toggleBtn = document.getElementById('toggle-btn');
+
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('collapsed');
+        });
+
         function showCurrentInventory() {
             document.getElementById('main-content').innerHTML = `
                 <div class="inventory-header">
@@ -145,4 +196,3 @@
     </script>
 </body>
 </html>
-
