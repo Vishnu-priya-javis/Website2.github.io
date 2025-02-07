@@ -112,24 +112,57 @@
             color: #666;
         }
 
+        .summary {
+            background-color: #ffcc80;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .summary h2 {
+            margin: 0 0 10px;
+            font-size: 20px;
+        }
+
+        .summary p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        .summary .highlight {
+            color: red;
+            font-weight: bold;
+        }
+
         .inventory-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
             gap: 10px;
-            margin-top: 20px;
             background-color: #fff;
             border-radius: 8px;
             padding: 20px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            height: 70vh;
+            height: auto;
         }
 
         .grid-item {
-            background-color: #f1f1f1;
-            border: 1px solid #ddd;
+            background-color: #e3f2fd;
+            border: 1px solid #90caf9;
             text-align: center;
             padding: 10px;
             border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .row-label {
+            font-weight: bold;
+            background-color: #bbdefb;
+        }
+
+        .column-label {
+            font-weight: bold;
+            background-color: #bbdefb;
         }
     </style>
 </head>
@@ -146,21 +179,32 @@
     </div>
 
     <div class="main-content" id="main-content">
-        <div class="inventory-header">
-            <h1>Depot Name</h1>
-            <p>Depot Address</p>
+        <div class="summary">
+            <h2>Summary</h2>
+            <p>No. of SKUs going below Reorder Point in next 2 days: <span class="highlight">5</span></p>
+            <p>No. of SKUs going below Reorder Point in next 7 days: <span>12</span></p>
+            <p>No. of Depots: <span>4</span></p>
         </div>
 
         <div class="inventory-grid" id="inventory-grid">
-            <!-- Placeholder for SKU and Stock grid -->
-            <div class="grid-item">SKU 1</div>
+            <div class="grid-item column-label">SKU 1</div>
+            <div class="grid-item column-label">SKU 2</div>
+            <div class="grid-item column-label">SKU 3</div>
+
+            <div class="grid-item row-label">Depot A</div>
             <div class="grid-item">100</div>
-            <div class="grid-item">SKU 2</div>
             <div class="grid-item">200</div>
-            <div class="grid-item">SKU 3</div>
             <div class="grid-item">150</div>
-            <div class="grid-item">SKU 4</div>
-            <div class="grid-item">300</div>
+
+            <div class="grid-item row-label">Depot B</div>
+            <div class="grid-item">80</div>
+            <div class="grid-item">180</div>
+            <div class="grid-item">120</div>
+
+            <div class="grid-item row-label">Depot C</div>
+            <div class="grid-item">60</div>
+            <div class="grid-item">150</div>
+            <div class="grid-item">100</div>
         </div>
     </div>
 
@@ -176,20 +220,32 @@
 
         function showCurrentInventory() {
             document.getElementById('main-content').innerHTML = `
-                <div class="inventory-header">
-                    <h1>Depot Name</h1>
-                    <p>Depot Address</p>
+                <div class="summary">
+                    <h2>Summary</h2>
+                    <p>No. of SKUs going below Reorder Point in next 2 days: <span class="highlight">5</span></p>
+                    <p>No. of SKUs going below Reorder Point in next 7 days: <span>12</span></p>
+                    <p>No. of Depots: <span>4</span></p>
                 </div>
 
                 <div class="inventory-grid">
-                    <div class="grid-item">SKU 1</div>
+                    <div class="grid-item column-label">SKU 1</div>
+                    <div class="grid-item column-label">SKU 2</div>
+                    <div class="grid-item column-label">SKU 3</div>
+
+                    <div class="grid-item row-label">Depot A</div>
                     <div class="grid-item">100</div>
-                    <div class="grid-item">SKU 2</div>
                     <div class="grid-item">200</div>
-                    <div class="grid-item">SKU 3</div>
                     <div class="grid-item">150</div>
-                    <div class="grid-item">SKU 4</div>
-                    <div class="grid-item">300</div>
+
+                    <div class="grid-item row-label">Depot B</div>
+                    <div class="grid-item">80</div>
+                    <div class="grid-item">180</div>
+                    <div class="grid-item">120</div>
+
+                    <div class="grid-item row-label">Depot C</div>
+                    <div class="grid-item">60</div>
+                    <div class="grid-item">150</div>
+                    <div class="grid-item">100</div>
                 </div>
             `;
         }
