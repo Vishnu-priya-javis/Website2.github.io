@@ -8,11 +8,52 @@
     body {
       font-family: Arial, sans-serif;
       margin: 0;
+      display: flex;
       background-color: #f9f9f9;
       color: #333;
     }
 
-    .container {
+    .sidebar {
+      width: 250px;
+      background-color: #2c3e50;
+      color: #ecf0f1;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 20px 10px;
+    }
+
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 20px;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar ul li {
+      margin: 10px 0;
+    }
+
+    .sidebar ul li a {
+      color: #ecf0f1;
+      text-decoration: none;
+      display: block;
+      padding: 10px;
+      border-radius: 4px;
+      transition: background 0.3s;
+    }
+
+    .sidebar ul li a:hover {
+      background-color: #34495e;
+    }
+
+    .main {
+      flex-grow: 1;
       padding: 20px;
     }
 
@@ -123,7 +164,17 @@
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="sidebar">
+    <h2>Menu</h2>
+    <ul>
+      <li><a href="#">Current Inventory</a></li>
+      <li><a href="#">Stock In Transit</a></li>
+      <li><a href="#">ARS Orders</a></li>
+      <li><a href="#">Place Order</a></li>
+    </ul>
+  </div>
+
+  <div class="main">
     <div class="header">
       <h1>Company Name</h1>
       <p>Company Headquarters Address</p>
