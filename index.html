@@ -3,206 +3,82 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Inventory Management</title>
+  <title>Dynamic Floating Grid</title>
   <style>
-    /* App Layout */
-    .app {
-      display: flex;
-      height: 100vh;
-    }
-
-    .sidebar {
-      background-color: #2c3e50;
-      color: #ecf0f1;
-      width: 250px;
-      min-width: 250px;
-      transition: width 0.3s;
-      overflow: hidden;
-    }
-
-    .sidebar.collapsed {
-      width: 60px;
-    }
-
-    .menu {
-      list-style-type: none;
-      padding: 0;
+    body {
       margin: 0;
-    }
-
-    .menu li {
-      padding: 15px;
-      cursor: pointer;
-    }
-
-    .menu li:hover {
-      background-color: #34495e;
-    }
-
-    .collapse-btn {
-      width: 100%;
-      background: #34495e;
-      border: none;
-      color: #ecf0f1;
-      padding: 10px;
-      cursor: pointer;
-    }
-
-    .main-content {
-      flex: 1;
-      padding: 20px;
-      overflow-y: auto;
-    }
-
-    .screen {
-      display: none;
-    }
-
-    .active-screen {
-      display: block;
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
     }
 
     .header {
-      margin-bottom: 20px;
+      text-align: center;
+      padding: 20px;
+      background-color: #2c3e50;
+      color: #ecf0f1;
     }
 
-    /* Grid Styling */
     .grid-container {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr); /* Adjust for more columns */
-      gap: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px; /* Space between boxes */
+      justify-content: center; /* Centers the content horizontally */
       padding: 20px;
     }
 
     .grid-item {
-      background-color: #f5a623; /* Orange color */
+      flex: 1 1 calc(33.333% - 20px); /* Adjusts width to 1/3 of container, minus gap */
+      max-width: calc(33.333% - 20px);
+      height: 150px; /* Fixed height */
+      background-color: #e74c3c; /* Red color */
       border-radius: 8px;
-      text-align: center;
-      position: relative;
-      height: 150px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       display: flex;
-      flex-direction: column;
       justify-content: center;
+      align-items: center;
+      text-align: center;
+      font-size: 18px;
+      color: white;
+      transition: transform 0.3s, box-shadow 0.3s;
     }
 
-    .depot-name {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      font-weight: bold;
-      font-size: 14px;
-      color: #333;
+    .grid-item:hover {
+      transform: scale(1.1); /* Makes the box pop */
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     }
 
-    .atp-quantity {
-      font-size: 24px;
-      font-weight: bold;
-      color: #333;
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .grid-item {
+        flex: 1 1 calc(50% - 20px); /* Adjusts to 2 columns on smaller screens */
+        max-width: calc(50% - 20px);
+      }
     }
 
-    .sku-id {
-      position: absolute;
-      bottom: 10px;
-      right: 10px;
-      font-size: 14px;
-      font-weight: bold;
-      color: #333;
+    @media (max-width: 480px) {
+      .grid-item {
+        flex: 1 1 calc(100% - 20px); /* Adjusts to 1 column on very small screens */
+        max-width: calc(100% - 20px);
+      }
     }
   </style>
 </head>
 <body>
-  <div class="app">
-    <!-- Collapsible Left Panel -->
-    <div id="sidebar" class="sidebar">
-      <button class="collapse-btn" onclick="toggleSidebar()">☰</button>
-      <ul class="menu">
-        <li onclick="showScreen('current-inventory')">Current Inventory</li>
-        <li onclick="showScreen('stock-in-transit')">Stock In Transit</li>
-        <li onclick="showScreen('ars-orders')">ARS Orders</li>
-        <li onclick="showScreen('place-order')">Place Order</li>
-      </ul>
-    </div>
-
-    <!-- Main Content -->
-    <div class="main-content">
-      <!-- Current Inventory Screen -->
-      <div id="current-inventory" class="screen active-screen">
-        <div class="header">
-          <h2>Company Name</h2>
-          <p>Headquarters Address: 5678 Business Blvd, Corporate City</p>
-        </div>
-        <div class="grid-container">
-          <div class="grid-item">
-            <span class="depot-name">Depot 1</span>
-            <span class="atp-quantity">100</span>
-            <span class="sku-id">SKU-001</span>
-          </div>
-          <div class="grid-item">
-            <span class="depot-name">Depot 1</span>
-            <span class="atp-quantity">200</span>
-            <span class="sku-id">SKU-002</span>
-          </div>
-          <div class="grid-item">
-            <span class="depot-name">Depot 1</span>
-            <span class="atp-quantity">150</span>
-            <span class="sku-id">SKU-003</span>
-          </div>
-          <div class="grid-item">
-            <span class="depot-name">Depot 2</span>
-            <span class="atp-quantity">80</span>
-            <span class="sku-id">SKU-001</span>
-          </div>
-          <div class="grid-item">
-            <span class="depot-name">Depot 2</span>
-            <span class="atp-quantity">300</span>
-            <span class="sku-id">SKU-002</span>
-          </div>
-          <div class="grid-item">
-            <span class="depot-name">Depot 2</span>
-            <span class="atp-quantity">60</span>
-            <span class="sku-id">SKU-003</span>
-          </div>
-          <div class="grid-item">
-            <span class="depot-name">Depot 3</span>
-            <span class="atp-quantity">40</span>
-            <span class="sku-id">SKU-001</span>
-          </div>
-          <div class="grid-item">
-            <span class="depot-name">Depot 3</span>
-            <span class="atp-quantity">90</span>
-            <span class="sku-id">SKU-002</span>
-          </div>
-          <div class="grid-item">
-            <span class="depot-name">Depot 3</span>
-            <span class="atp-quantity">70</span>
-            <span class="sku-id">SKU-003</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Placeholder for Other Screens -->
-      <div id="stock-in-transit" class="screen">Stock In Transit Screen</div>
-      <div id="ars-orders" class="screen">ARS Orders Screen</div>
-      <div id="place-order" class="screen">Place Order Screen</div>
-    </div>
+  <div class="header">
+    <h1>Company Name</h1>
+    <p>Headquarters Address: 5678 Business Blvd, Corporate City</p>
   </div>
 
-  <script>
-    function toggleSidebar() {
-      const sidebar = document.getElementById('sidebar');
-      sidebar.classList.toggle('collapsed');
-    }
-
-    function showScreen(screenId) {
-      const screens = document.querySelectorAll('.screen');
-      screens.forEach(screen => screen.classList.remove('active-screen'));
-
-      const activeScreen = document.getElementById(screenId);
-      if (activeScreen) {
-        activeScreen.classList.add('active-screen');
-      }
-    }
-  </script>
+  <div class="grid-container">
+    <div class="grid-item">Depot 1<br>SKU 001<br>ATP: 100</div>
+    <div class="grid-item">Depot 1<br>SKU 002<br>ATP: 200</div>
+    <div class="grid-item">Depot 1<br>SKU 003<br>ATP: 150</div>
+    <div class="grid-item">Depot 2<br>SKU 001<br>ATP: 80</div>
+    <div class="grid-item">Depot 2<br>SKU 002<br>ATP: 300</div>
+    <div class="grid-item">Depot 2<br>SKU 003<br>ATP: 60</div>
+    <div class="grid-item">Depot 3<br>SKU 001<br>ATP: 40</div>
+    <div class="grid-item">Depot 3<br>SKU 002<br>ATP: 90</div>
+    <div class="grid-item">Depot 3<br>SKU 003<br>ATP: 70</div>
+  </div>
 </body>
 </html>
