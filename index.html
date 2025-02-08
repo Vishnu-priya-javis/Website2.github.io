@@ -20,13 +20,23 @@
       height: 100vh;
       display: flex;
       flex-direction: column;
-      padding: 20px 10px;
+      padding: 10px;
+      transition: width 0.3s ease;
+    }
+
+    .sidebar.collapsed {
+      width: 60px;
     }
 
     .sidebar h2 {
       text-align: center;
       margin-bottom: 20px;
       font-size: 20px;
+      transition: opacity 0.3s ease;
+    }
+
+    .sidebar.collapsed h2 {
+      opacity: 0;
     }
 
     .sidebar ul {
@@ -42,7 +52,8 @@
     .sidebar ul li a {
       color: #ecf0f1;
       text-decoration: none;
-      display: block;
+      display: flex;
+      align-items: center;
       padding: 10px;
       border-radius: 4px;
       transition: background 0.3s;
@@ -50,6 +61,22 @@
 
     .sidebar ul li a:hover {
       background-color: #34495e;
+    }
+
+    .toggle-btn {
+      background-color: #34495e;
+      color: #ecf0f1;
+      border: none;
+      cursor: pointer;
+      padding: 10px;
+      text-align: center;
+      margin: 10px 0;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+    }
+
+    .toggle-btn:hover {
+      background-color: #3b4f63;
     }
 
     .main {
@@ -124,18 +151,18 @@
     .drawer {
       position: fixed;
       top: 0;
-      right: -400px;
+      left: -400px;
       width: 400px;
       height: 100%;
       background: #fff;
-      box-shadow: -4px 0 6px rgba(0, 0, 0, 0.1);
+      box-shadow: 4px 0 6px rgba(0, 0, 0, 0.1);
       padding: 20px;
       overflow-y: auto;
-      transition: right 0.3s ease;
+      transition: left 0.3s ease;
     }
 
     .drawer.open {
-      right: 0;
+      left: 0;
     }
 
     .drawer-header {
@@ -184,31 +211,17 @@
       background-color: #f3f3f3;
       color: #555;
     }
-
-    @media (hover: hover) {
-      .card {
-        animation: pulse 1.5s infinite;
-      }
-
-      @keyframes pulse {
-        0%, 100% {
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        50% {
-          box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
-        }
-      }
-    }
   </style>
 </head>
 <body>
-  <div class="sidebar">
+  <div class="sidebar" id="sidebar">
+    <button class="toggle-btn" onclick="toggleSidebar()">Toggle</button>
     <h2>Menu</h2>
     <ul>
-      <li><a href="#">Current Inventory</a></li>
-      <li><a href="#">Stock In Transit</a></li>
-      <li><a href="#">ARS Orders</a></li>
-      <li><a href="#">Place Order</a></li>
+      <li><a href="#" onclick="menuClick('Current Inventory')">Current Inventory</a></li>
+      <li><a href="#" onclick="menuClick('Stock In Transit')">Stock In Transit</a></li>
+      <li><a href="#" onclick="menuClick('ARS Orders')">ARS Orders</a></li>
+      <li><a href="#" onclick="menuClick('Place Order')">Place Order</a></li>
     </ul>
   </div>
 
@@ -219,17 +232,17 @@
     </div>
 
     <div class="grid">
-      <div class="card" onclick="openDrawer('SKU123')">
+      <div class="card" onclick="openDrawer('Depot A', 'SKU123', 50)">
         <span class="depot">Depot A</span>
         <div class="atp">50</div>
         <span class="sku">SKU123</span>
       </div>
-      <div class="card" onclick="openDrawer('SKU124')">
+      <div class="card" onclick="openDrawer('Depot B', 'SKU124', 75)">
         <span class="depot">Depot B</span>
         <div class="atp">75</div>
         <span class="sku">SKU124</span>
       </div>
-      <div class="card" onclick="openDrawer('SKU125')">
+      <div class="card" onclick="openDrawer('Depot C', 'SKU125', 100)">
         <span class="depot">Depot C</span>
         <div class="atp">100</div>
         <span class="sku">SKU125</span>
@@ -264,10 +277,19 @@
   </div>
 
   <script>
+    const sidebar = document.getElementById('sidebar');
     const drawer = document.getElementById('drawer');
 
-    function openDrawer(sku) {
-      document.getElementById('drawer-title').textContent = `Depot SKU: ${sku}`;
+    function toggleSidebar() {
+      sidebar.classList.toggle('collapsed');
+    }
+
+    function menuClick(menuName) {
+      alert(`Clicked on ${menuName}`);
+    }
+
+    function openDrawer(depot, sku, atp) {
+      document.getElementById('drawer-title').textContent = `${depot} - ${sku} (ATP: ${atp})`;
       drawer.classList.add('open');
       loadChart();
       loadTableData();
