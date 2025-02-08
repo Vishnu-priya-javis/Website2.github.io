@@ -98,6 +98,11 @@
       text-align: center;
       border-radius: 12px;
       margin-bottom: 20px;
+      position: relative;
+      height: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .header h1 {
@@ -109,6 +114,21 @@
       margin: 5px 0 0;
       font-size: 16px;
       color: #555;
+    }
+
+    .header canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      opacity: 0.2;
+    }
+
+    .header-content {
+      position: relative;
+      z-index: 1;
     }
 
     .grid {
@@ -238,8 +258,11 @@
 
   <div class="main">
     <div class="header">
-      <h1>Company Name</h1>
-      <p>Company Headquarters Address</p>
+      <canvas id="headerChart"></canvas>
+      <div class="header-content">
+        <h1>Company Name</h1>
+        <p>Company Headquarters Address</p>
+      </div>
     </div>
 
     <div class="grid">
@@ -394,6 +417,38 @@
         closeDrawer();
       }
     });
+
+    function loadHeaderChart() {
+      const ctx = document.getElementById('headerChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['January', 'February', 'March', 'April', 'May'],
+          datasets: [{
+            label: 'Inventory Trends',
+            data: [50, 60, 55, 70, 65],
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 2,
+            fill: true,
+            backgroundColor: 'rgba(255, 99, 132, 0.2)'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              title: { display: true, text: 'Months' }
+            },
+            y: {
+              title: { display: true, text: 'Inventory Levels' }
+            }
+          }
+        }
+      });
+    }
+
+    window.onload = loadHeaderChart;
   </script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
